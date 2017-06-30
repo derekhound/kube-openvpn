@@ -11,4 +11,5 @@
 * OVPN_VERB - The verbosity of openvpn logs. (Default: `3`)
 * OVPN_DEFROUTE - Whether to allow clients to route traffic other than pod/service networks. Set to `1` to allow, set to `2` to push a default route to clients. (Default: `0`)
 * OVPN_ROUTES - Comma separated list of CIDR routes to push to clients and configure firewall rules for (Default: `$OVPN_K8S_SERVICE_NETWORK,$OVPN_K8S_POD_NETWORK`)
+* OVPN_DNSS - Comma separated list of dns to push to clients.
 * DEBUG - Set this variable to any value to print each command executed and set `OVPN_DEBUG` to `5`.
