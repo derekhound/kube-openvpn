@@ -50,6 +50,17 @@ OVPN_K8S_POD_NETWORK_ROUTE=$(getroute $OVPN_K8S_POD_NETWORK)
 
 envsubst < $OVPN_TEMPLATE > $OVPN_CONFIG
 
+IFS=',' read -r -a dnss <<< "$OVPN_DNSS"
+
+for dns in "${dnss[@]}"; do
+    if [[ "$dns" =~ ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$ ]]; then
+		sed -i "/;push \"dhcp-option DNS 208.67.222.222\"/ipush \"dhcp-option DNS ${dns}\"" $OVPN_CONFIG
+    else
+        echo "$(date "+%a %b %d %H:%M:%S %Y") Dropping invalid dns '${dns}'."
+        dnss=("${dnss[@]/$dns}" )
+    fi
+done
+
 IFS=',' read -r -a routes <<< "$OVPN_ROUTES"
 routes+=("$OVPN_K8S_SERVICE_NETWORK" "$OVPN_K8S_POD_NETWORK")
 
